@@ -1,10 +1,12 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <cstdlib>
 #include <ctime>
 
 //using namespace std;
 using std::vector;
+using std::swap;
 
 /*
  排序算法——sort algorithm
@@ -17,14 +19,6 @@ using std::vector;
  基数排序——radix sort
  外排序——external sort(or external sorting)
 */
-
-template<typename T>
-void mySwap(T& a, T& b)
-{
-	T temp = a;
-	a = b;
-	b = temp;
-}
 
 //遍历打印
 template<typename T>
@@ -51,7 +45,7 @@ void bubbleSort(vector<T> &arr, int begin, int end)
 	for(int i = begin; i < end; i++)
 		for(int j = i + 1; j < end; j++)
 			if(arr.at(i) > arr.at(j))
-				mySwap(arr.at(i), arr.at(j));
+				swap(arr.at(i), arr.at(j));
 }
 
 //选择排序
@@ -65,7 +59,7 @@ void selectSort(vector<T> &arr, int begin, int end)
 			if(arr.at(j) < arr.at(indexMin))
 				indexMin = j;
 		if(i != indexMin)
-			mySwap(arr.at(i), arr.at(indexMin));
+			swap(arr.at(i), arr.at(indexMin));
 	}
 }
 
@@ -135,6 +129,22 @@ void quickSort(vector<T> &arr, int begin, int end)
 	quickSort(arr, rIndex + 1, end);
 }
 
+//堆排序
+template<typename T>
+void heapSort(vector<T> &arr, int begin, int end)
+{
+	for(int i = end - 1; i > 0; i--) {
+		for(int j = i; j > 0; j--) {
+			//父节点下标
+			int pIndex = (j - 1) / 2;
+			if(arr.at(j) > arr.at(pIndex)) {
+				swap(arr.at(j), arr.at(pIndex));
+			}
+		}
+		swap(arr.at(0), arr.at(i));
+	}
+}
+
 //归并排序
 template<typename T>
 void mergeSort(vector<T> &arr, int begin, int end)
@@ -180,13 +190,24 @@ int main()
 	arr.clear();
 #endif
 
-#if 1
+#if 0
 	for(int i = 0; i < COUNTS; i++)
 	       arr.emplace_back(rand() % 100);	
 	std::cout << "=====Before quickSort=====" << std::endl;
 	printArr(arr);
 	quickSort(arr, 0, arr.size());
 	std::cout << "=====After quickSort=====" << std::endl;
+	printArr(arr);
+	arr.clear();
+#endif
+
+#if 1
+	for(int i = 0; i < COUNTS; i++)
+	       arr.emplace_back(rand() % 100);
+	std::cout << "=====Before heapSort=====" << std::endl;
+	printArr(arr);
+	heapSort(arr, 0, arr.size());
+	std::cout << "=====After heapSort=====" << std::endl;
 	printArr(arr);
 	arr.clear();
 #endif
