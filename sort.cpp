@@ -131,18 +131,40 @@ void quickSort(vector<T> &arr, int begin, int end)
 
 //堆排序
 template<typename T>
-void heapSort(vector<T> &arr, int begin, int end)
+//向下调整
+void HeapAdjust(vector<T> &arr, int parent, int len)
 {
-	for(int i = end - 1; i > 0; i--) {
-		for(int j = i; j > 0; j--) {
-			//父节点下标
-			int pIndex = (j - 1) / 2;
-			if(arr.at(j) > arr.at(pIndex)) {
-				swap(arr.at(j), arr.at(pIndex));
-			}
+	int child = parent * 2 + 1;
+	while(child < len) {
+		if(child + 1 < len && arr.at(child + 1) < arr.at(child)) {
+			child++;
 		}
-		swap(arr.at(0), arr.at(i));
+		if(arr.at(parent) <= arr.at(child)) {
+			return;
+		}
+		swap(arr.at(parent), arr.at(child));
+		parent = child;
+		child = parent * 2 + 1;
 	}
+}
+template<typename T>
+void heapSort(vector<T> &arr)
+{
+	int len = arr.size();
+	if(len <= 1) {
+		return;
+	}
+	int parent = (len - 1 - 1) >> 1;
+	//初始化小根堆
+	for(int i = parent; i >= 0; i--) {
+		HeapAdjust(arr, i, len);
+	}
+	//向下调整
+	for(int i = len - 1; i >= 0; i--) {
+		swap(arr.at(0), arr.at(i));
+		HeapAdjust(arr, 0, i);
+	}
+	std::reverse(arr.begin(), arr.end());
 }
 
 //归并排序
@@ -206,7 +228,7 @@ int main()
 	       arr.emplace_back(rand() % 100);
 	std::cout << "=====Before heapSort=====" << std::endl;
 	printArr(arr);
-	heapSort(arr, 0, arr.size());
+	heapSort(arr);
 	std::cout << "=====After heapSort=====" << std::endl;
 	printArr(arr);
 	arr.clear();
